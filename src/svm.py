@@ -31,10 +31,9 @@ class SVM:
     def itr(self):
         eta_al = 0.0001  # update ratio of alpha
         eta_be = 0.1  # update ratio of beta
-        for i in range(self.T.size):
-            delta = 1 - (self.T[i] * self.X[i]).dot(self.alpha *
-                                                    self.T * self.X.T).sum() - self.beta * self.T[i] * self.alpha.dot(self.T)
-            self.alpha[i] += eta_al * delta
+        # for i in range(self.T.size):
+        #     delta = self.Ld2(self.alpha)
+        self.alpha += eta_al * self.Ld2(self.alpha)
         for i in range(self.T.size):
             self.beta += eta_be * self.alpha.dot(self.T) ** 2 / 2
 
@@ -42,7 +41,7 @@ class SVM:
         lastTime = time.time()
         for i in range(0, N):
             self.itr()
-            if i % stride == 0:
+            if i % stride == 0:  # Only when needs update hyperplane to check result
                 current = time.time()
                 self.updateHyperplane()
                 self.report(i, current - lastTime)
@@ -51,8 +50,6 @@ class SVM:
     def report(self, i, el):
         print("Epoc - %s , %s\n%s" % (i, el, self.reporter.report(self, i)))
 
-    def Ld(self, alpha):
-        return alpha.T.dot(np.ones(alpha.size)) - 1 / 2 * \
-            alpha.T.dot(self.H).dot(alpha) - 1 / 2 * self.beta * \
-            alpha.T.dot(self.T) * self.T.T.dot(alpha)
+    def Ld2(self, alpha):
+        return np.ones(alpha.size) - self.H.dot(alpha) - self.beta * alpha.T.dot(self.T) * self.T
 #
