@@ -31,12 +31,14 @@ targetIndex = 6
 # y[y == targetIndex] = -1
 X = []
 y = []
-for i in range(1,220):
+glassDataset = 272
+soloDataset = 318
+for i in range(1,glassDataset):
     fName = "./screened-glasses/%s.jpg" % (i)
     n = np.ndarray.flatten(np.array(Image.open(fName).convert('L'), 'f' ))/255
     X.append(n)
     y.append(1)
-for i in range(1,220):
+for i in range(1,soloDataset):
     fName = "./screened-solo/%s.JPG" % (i)
     n = np.ndarray.flatten(np.array(Image.open(fName).convert('L'), 'f' ))/255
     X.append(n)
