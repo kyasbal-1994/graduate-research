@@ -24,9 +24,13 @@ class Reporter:
 
 
 class ConvergenceReporter:
+    
     def __init__(self, testX, testY):
         self.testX = testX
         self.testY = testY
+        self.maxPercentage = 0
 
     def report(self, svm: SVM, i: float, el: float) -> str:
-        return "%s,%s,%s,%s" % (i, npa.norm(svm.calcW()), svm.test(self.testX, self.testY) * 100, svm.test(svm.X, svm.T) * 100)
+        current = svm.test(self.testX, self.testY) * 100
+        self.maxPercentage = current if current > self.maxPercentage else self.maxPercentage
+        return "%s,%s,%s,%s(max:%s)" % (i, npa.norm(svm.calcW()),current, svm.test(svm.X, svm.T) * 100,self.maxPercentage)

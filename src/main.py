@@ -37,7 +37,7 @@ for i in range(1,220):
     X.append(n)
     y.append(1)
 for i in range(1,220):
-    fName = "./screened-solo/%s.jpg" % (i)
+    fName = "./screened-solo/%s.JPG" % (i)
     n = np.ndarray.flatten(np.array(Image.open(fName).convert('L'), 'f' ))/255
     X.append(n)
     y.append(-1)
@@ -47,9 +47,9 @@ y = np.array(y)
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.33, random_state=42)
 
-svm = SVM(X_train, y_train, 1, kf.gaussian_kernel(100),
+svm = SVM(X_train, y_train, 10, kf.gaussian_kernel(100),
           r.ConvergenceReporter(X_test, y_test))
-svm.learn(100000, 1)
+svm.learn(100000, 1000)
 svm.updateHyperplane()
 print(svm.hp.W)
 print(svm.hp.b)
