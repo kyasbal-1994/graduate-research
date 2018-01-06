@@ -2,5 +2,6 @@
     "[python]": {
         "editor.formatOnSave": false,
         "editor.formatOnPaste": false
-    }
+    },
+    "python.pythonPath": "/Users/kyasbal/.pyenv/versions/anaconda3-5.0.1/bin/python"
 }

@@ -1,27 +1,55 @@
 
 import numpy as np
+from PIL import Image
 import matplotlib.pyplot as plt
+import kernelFactories as kf
+from sklearn.model_selection import train_test_split
 from sklearn import datasets
 from hyperplane import Hyperplane
 from svm import SVM
-from reporter import Reporter
+import reporter as r
 
-iris = datasets.load_iris()
-# 先頭から100個のデータ(setosaとversicolorを抽出)
-# 特徴は0番目(sepal length)と2列目(petal length)を使用
-data = iris.data[0:100][:, [0, 1]]
-target = iris.target[0:100]
-target[target != 0] = 1
-target[target == 0] = -1
-# print(target)
+targetIndex = 6
 
-for i in range(0, 100):
-    if target[i] == -1:
-        print("%s, %s" % (data[i][0], data[i][1]))
-hp = Hyperplane(data[0].size)
-svm = SVM(data, target, Reporter())
-svm.learn(10000, 100)
+# IRIS
+# iris = datasets.load_iris()
+# X = iris.data
+# y = iris.target
+# y[y != targetIndex] = 1
+# y[y == targetIndex] = -1
+# WINES
+# X, y = datasets.load_wine(return_X_y=True)
+# y[y != targetIndex] = 1
+# y[y == targetIndex] = -1
+# CANCER
+# X, y = datasets.load_breast_cancer(return_X_y=True)
+# y[y != targetIndex] = 1
+# y[y == targetIndex] = -1
+# DIGITS
+# X, y = datasets.load_digits(return_X_y=True)
+# y[y != targetIndex] = 1
+# y[y == targetIndex] = -1
+X = []
+y = []
+for i in range(1,220):
+    fName = "./screened-glasses/%s.jpg" % (i)
+    n = np.ndarray.flatten(np.array(Image.open(fName).convert('L'), 'f' ))/255
+    X.append(n)
+    y.append(1)
+for i in range(1,220):
+    fName = "./screened-solo/%s.jpg" % (i)
+    n = np.ndarray.flatten(np.array(Image.open(fName).convert('L'), 'f' ))/255
+    X.append(n)
+    y.append(-1)
+X = np.array(X)
+y = np.array(y)
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.33, random_state=42)
+
+svm = SVM(X_train, y_train, 1, kf.gaussian_kernel(100),
+          r.ConvergenceReporter(X_test, y_test))
+svm.learn(100000, 1)
 svm.updateHyperplane()
-
 print(svm.hp.W)
 print(svm.hp.b)

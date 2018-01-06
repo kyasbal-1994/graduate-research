@@ -5,12 +5,28 @@ import matplotlib.pyplot as plt
 
 
 class Reporter:
-    def report(self, svm: SVM, i: float) -> str:
-        x = np.linspace(4, 10, 100)
-        y = (-svm.hp.b - svm.hp.W[0] * x) / svm.hp.W[1]
-        plt.scatter(svm.X[svm.T == -1][:, 0], svm.X[svm.T == -1][:, 1])
-        plt.scatter(svm.X[svm.T == 1][:, 0], svm.X[svm.T == 1][:, 1])
-        plt.plot(x, y, "r-")
-        plt.savefig("%s.png" % (str(i)))
-        plt.clf()
-        return "W norm : %s" % (npa.norm(svm.calcW()))
+    def __init__(self, useChart, testX, testY):
+        self.useChart = useChart
+        self.testX = testX
+        self.testY = testY
+
+    def report(self, svm: SVM, i: float, el: float) -> str:
+        if self.useChart:
+            x = np.linspace(4, 10, 100)
+            y = (-svm.hp.b - svm.hp.W[0] * x) / svm.hp.W[1]
+            plt.scatter(svm.X[svm.T == -1][:, 0], svm.X[svm.T == -1][:, 1])
+            plt.scatter(svm.X[svm.T == 1][:, 0], svm.X[svm.T == 1][:, 1])
+            plt.plot(x, y, "r-")
+            plt.savefig("%s.png" % (str(i)))
+            plt.clf()
+
+        return "Epoc - %s , %s\nW norm : %s (Test : %s%%)" % (i, el, npa.norm(svm.calcW()), svm.test(self.testX, self.testY) * 100)
+
+
+class ConvergenceReporter:
+    def __init__(self, testX, testY):
+        self.testX = testX
+        self.testY = testY
+
+    def report(self, svm: SVM, i: float, el: float) -> str:
+        return "%s,%s,%s,%s" % (i, npa.norm(svm.calcW()), svm.test(self.testX, self.testY) * 100, svm.test(svm.X, svm.T) * 100)
