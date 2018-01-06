@@ -8,7 +8,8 @@ from sklearn import datasets
 from hyperplane import Hyperplane
 from svm import SVM
 import reporter as r
-
+import sys
+np.set_printoptions(threshold=np.inf)
 targetIndex = 6
 
 # IRIS
@@ -32,7 +33,7 @@ targetIndex = 6
 X = []
 y = []
 glassDataset = 272
-soloDataset = 318
+soloDataset = 272
 for i in range(1,glassDataset):
     fName = "./screened-glasses/%s.jpg" % (i)
     n = np.ndarray.flatten(np.array(Image.open(fName).convert('L'), 'f' ))/255
@@ -49,9 +50,9 @@ y = np.array(y)
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.33, random_state=42)
 
-svm = SVM(X_train, y_train, 10, kf.gaussian_kernel(100),
+svm = SVM(X_train, y_train, float(sys.argv[1]), kf.gaussian_kernel(float(sys.argv[2])),
           r.ConvergenceReporter(X_test, y_test))
-svm.learn(100000, 1000)
+svm.learn(int(sys.argv[3] if len(sys.argv) >= 4 else 10000), int(sys.argv[4] if len(sys.argv) >= 5 else 1000))
 svm.updateHyperplane()
 print(svm.hp.W)
 print(svm.hp.b)
