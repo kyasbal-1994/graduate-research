@@ -33,4 +33,4 @@ class ConvergenceReporter:
     def report(self, svm: SVM, i: float, el: float) -> str:
         current = svm.test(self.testX, self.testY) * 100
         self.maxPercentage = current if current > self.maxPercentage else self.maxPercentage
-        return "%s,%s,%s,%s(max:%s)" % (i, npa.norm(svm.calcW()),current, svm.test(svm.X, svm.T) * 100,self.maxPercentage)
+        return "%s,%s,%s,%s,%s" % (i, npa.norm(svm.calcW()),current, svm.test(svm.X, svm.T) * 100,self.maxPercentage)
