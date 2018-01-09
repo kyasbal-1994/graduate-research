@@ -163,4 +163,4 @@ $RECYCLE.BIN/
 *.lnk
 
 
-*.png
+*.png.DS_Store
